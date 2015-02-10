@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tinder.js</title>
+  <link rel="stylesheet" href="styles/bootstrap.css">
+  <script src="javascript/query.tinder.js"></script>
+  <script src="javascript/ajax.tinder.js"></script>
+  <script src="javascript/geolocation.tinder.js"></script>
+  <script src="javascript/storage.tinder.js"></script>
+  <script src="javascript/notifications.tinder.js"></script>
+</head>
+
+<body>
+  <!-- TinderQuery! -->
+  <script>
+  $ = window.Tinder;
+  $.last_location = {latlong: "", address: "not defined"};
+  var data = "algo";
+  </script>
+
+  <!-- TinderAjax! -->
+  <button id="getLocation">Get My Location</button>
+  <script>
+  var button = $.query("#getLocation");
+  $.on(button, "click", function(event) {
+    $.getLocation();
+  });
+  </script>
+
+  <!-- TinderAjax! -->
+  <button id="getAddress">Get My Address</button>
+  <script>
+  var button = $.query("#getAddress");
+  $.on(button, "click", function(event) {
+    var url = "https://maps.googleapis.com/maps/api/geocode/json?latlng="+$.last_location.latlong+"&sensor=true_or_false";
+    $.ajax(url, data, function(response) {
+      var response = JSON.parse(this.responseText);
+      $.last_location.address = response.results[0].formatted_address;
+    });
+  });
+  </script>
+
+  <!-- TinderStorage! -->
+  <button id="storeData">Store Data</button>
+  <script>
+  var button = $.query("#storeData");
+  $.on(button, "click", function(event) {
+    // save geolocation and address in local storage
+    $.store($.last_location);
+  });
+  </script>
+
+  <!-- TinderNotification! -->
+  <button id="notifyData">Notify Data</button>
+  <script>
+  var button = $.query("#notifyData");
+  $.on(button, "click", function(event) {
+    // retrieve data from storage and notify it
+    $.last_location = $.load();
+    $.notify($.last_location);
+  });
+
+  </script>
+
+</body>
+
+</html>
